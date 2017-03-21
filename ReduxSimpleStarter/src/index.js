@@ -1,17 +1,53 @@
-import React from 'react';
+import React,{Component} from 'react';
+import _ from 'lodash';//_ is just a name.. common name given to lodash
 import ReactDOM from 'react-dom';
 import SearchBar from './components/search_bar';
-
+import YTSearch from 'youtube-api-search';
+import VideoList from './components/video_list';
+import VideoDetail from './components/video_detail';
 const API_KEY = 'AIzaSyCvusSQEui7MdeRuD_loWpvPyg-fQDrJDQ';
 
 //Create a new component that produce some html
 //same as function()
-const App = () => {
-  return (
+class App extends Component {
+
+  constructor(props){
+    super(props);
+    this.state = {
+      videos : [],
+    selectedVideo : null
+  };
+
+this.videoSearch('football');
+  }
+
+
+  videoSearch(term){
+    YTSearch({key : API_KEY,term: term}, (videos) => {
+      this.setState(
+        {videos: videos,
+        selectedVideo : videos[0]}
+      ); //same as {videos} {videos: videos}
+    })
+  }
+
+  //adding fn that will set the current video value on click. so that we can select video
+  //this is passed to videolist, to videotiem. .and clickt there causes this method to run, setting the state.
+  // we can define the method only here.. as state is here.
+  render() {
+    const videoSearch = _.debounce( (term) => {this.videoSearch(term)},300 );
+    return (
     <div>
-    <SearchBar />
+    <SearchBar onSearchTermChange={videoSearch}/>
+    <VideoDetail video={this.state.selectedVideo} />
+    <VideoList
+        onVideoSelect = {selectedVideo => this.setState({selectedVideo})}//short hand as key and value same string
+       videos={this.state.videos}/>
   </div>
-);
+)
+}
+
+
 }
 
 
