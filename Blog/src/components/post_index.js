@@ -10,6 +10,18 @@ class PostsIndex extends Component {
     this.props.fetchPosts();
   }
 
+  renderPosts(){
+    console.log(this.props.posts);
+    return this.props.posts.map( (post ) => {
+      return(
+        <li className="list-group-item" key={post.id}>
+          <span className="pull-xs-right">{post.categories}</span>
+          <strong>{post.title}</strong>
+        </li>
+      )
+    });
+  }
+
   render() {
     return (
       <div>
@@ -18,9 +30,18 @@ class PostsIndex extends Component {
             Add Post
           </Link>
         </div>
-        List
+        <h3>Posts</h3>
+        <ul className="list-group">
+          {this.renderPosts()}
+        </ul>
       </div>
     );
+  }
+}
+
+function mapStateToProps(state){
+  return {
+    posts : state.posts.all
   }
 }
 
@@ -28,7 +49,7 @@ function mapDispatchToProps(dispatch){
   return bindActionCreators({ fetchPosts }, dispatch);
 }
 //null below because we dont have a state to map
-export default connect(null, mapDispatchToProps)(PostsIndex);
+export default connect(mapStateToProps, mapDispatchToProps)(PostsIndex);
 
 //short cut for above. With below we dont need maodispatch fn at all
 // export default connect ( null , { fetchPosts : fetchPosts})(PostsIndex);
