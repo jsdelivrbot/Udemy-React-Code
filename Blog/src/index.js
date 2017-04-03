@@ -8,6 +8,8 @@ import reducers from './reducers';
 import routes from './routes';
 import promise from 'redux-promise';
 
+//all actions will now flow through promise library and
+//helps in unravelling the response
 const createStoreWithMiddleware = applyMiddleware(
   promise
 )(createStore);
